@@ -1,5 +1,5 @@
 # Change this if tesseract or ClerkGUI can't find any data
-MODELS_PATH = '/usr/share/tessdata/'
+MODELS_PATH = '/usr/share/tessdata/./'
 
 # Sane values for scaling
 SCALE_MIN     = 0.2
