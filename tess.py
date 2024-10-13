@@ -1,5 +1,5 @@
 ############################################################
-### Project: coin
+### Project: clerk-savior 
 ### File: tess.py
 ### Description: handles all pytesseract-related operations
 ### Version: 1.0
@@ -11,7 +11,8 @@ import pytesseract
 from constants import *
 
 # getTessModelNames(modelsPath): automatically finds all available
-#  language models in modelsPath
+# language models in modelsPath
+# return type: list of str
 def getTessModelNames(modelsPath=MODELS_PATH):
     models_list = glob.glob(modelsPath + "*.traineddata")
     model_names = []
@@ -22,7 +23,8 @@ def getTessModelNames(modelsPath=MODELS_PATH):
     return model_names
 
 # image2Text(model, croppedImage): use the model with the name
-#  model to try to recognize the text in croppedImage
+# model to try to recognize the text in croppedImage
+# return type: str
 def image2Text(model, croppedImage):
     gray = cv2.cvtColor(croppedImage, cv2.COLOR_BGR2GRAY)
     gray = cv2.medianBlur(gray, 1)

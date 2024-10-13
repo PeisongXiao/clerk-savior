@@ -10,20 +10,20 @@
     <height>720</height>
    </rect>
   </property>
-  <property name="font">
+  <property name="font"> <!-- Font -->
    <font>
-    <family>Droid Sans Mono</family>
+    <family>Droid Sans Mono</family> 
     <pointsize>12</pointsize>
    </font>
   </property>
   <property name="windowTitle">
-   <string>Clerk Savior</string>
+   <string>Clerk Savior</string> <!-- Title -->
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
   <property name="tabShape">
-   <enum>QTabWidget::Rounded</enum>
+   <enum>QTabWidget::Rounded</enum> <!-- Shape of the tabs -->
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -45,16 +45,16 @@
        <item>
         <widget class="QScrollArea" name="imageView">
          <property name="verticalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOn</enum>
+          <enum>Qt::ScrollBarAlwaysOn</enum> 
          </property>
          <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOn</enum>
+          <enum>Qt::ScrollBarAlwaysOn</enum> 
          </property>
          <property name="widgetResizable">
-          <bool>true</bool>
+          <bool>true</bool> 
          </property>
          <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
+          <property name="geometry"> <!-- geometry setting for the windows -->
            <rect>
             <x>0</x>
             <y>0</y>
@@ -66,10 +66,10 @@
            <item row="0" column="0">
             <widget class="QLabel" name="viewPanel">
              <property name="text">
-              <string>Double click to open image</string>
+              <string>Double click to open image</string> <!-- Instructions -->
              </property>
              <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <set>Qt::AlignCenter</set> 
              </property>
             </widget>
            </item>
@@ -89,56 +89,56 @@
           <item>
            <widget class="QPushButton" name="openImage">
             <property name="text">
-             <string>Open image</string>
+             <string>Open image</string> <!-- Button to open an image file -->
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="openPDF">
             <property name="text">
-             <string>Open PDF</string>
+             <string>Open PDF</string> <!-- Button to open a PDF file -->
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="nextPage">
             <property name="text">
-             <string>Next Page</string>
+             <string>Next Page</string> <!-- Button to go  to the next page in a PDF -->
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="batchProcess">
             <property name="text">
-             <string>Process file names</string>
+             <string>Process file names</string> <!-- Button to process file names -->
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="batchRename">
             <property name="text">
-             <string>Rename all files</string>
+             <string>Rename all files</string> <!-- Button to rename files -->
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="models"/>
+           <widget class="QComboBox" name="models"/> <!--box to select different Tesseract models -->
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="patternBox"/>
+        <widget class="QLineEdit" name="patternBox"/> <!-- patternbox box for file process patterns -->
        </item>
        <item>
-        <widget class="QTableView" name="itemsTable"/>
+        <widget class="QTableView" name="itemsTable"/> <!-- Table view for displaying file operations -->
        </item>
       </layout>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar"/> <!-- Status bar for event messages -->
  </widget>
  <resources/>
  <connections/>
