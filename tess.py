@@ -1,5 +1,5 @@
 ############################################################
-### Project: clerk-savior 
+### Project: clerk-savior
 ### File: tess.py
 ### Description: handles all pytesseract-related operations
 ### Version: 1.0

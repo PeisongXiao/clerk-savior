@@ -12,7 +12,7 @@
   </property>
   <property name="font"> <!-- Font -->
    <font>
-    <family>Droid Sans Mono</family> 
+    <family>Droid Sans Mono</family>
     <pointsize>12</pointsize>
    </font>
   </property>
@@ -45,13 +45,13 @@
        <item>
         <widget class="QScrollArea" name="imageView">
          <property name="verticalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOn</enum> 
+          <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
          <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOn</enum> 
+          <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
          <property name="widgetResizable">
-          <bool>true</bool> 
+          <bool>true</bool>
          </property>
          <widget class="QWidget" name="scrollAreaWidgetContents">
           <property name="geometry"> <!-- geometry setting for the windows -->
@@ -69,7 +69,7 @@
               <string>Double click to open image</string> <!-- Instructions -->
              </property>
              <property name="alignment">
-              <set>Qt::AlignCenter</set> 
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>

@@ -1,6 +1,6 @@
 # 🌟 Clerk-Savior
 
-Clerk Savior is a desktop application written in Python that helps you manage your images and PDFs files with Tesseract. 
+Clerk Savior is a desktop application written in Python that helps you manage your images and PDFs files with Tesseract.
 
 ## Features
 
@@ -16,7 +16,7 @@ Clerk Savior is a desktop application written in Python that helps you manage yo
 Before you install Clerk Savior, ensure that you have the following software installed on your system:
 
 - **Python**: Clerk Savior is written using Python. You can download it from [python.org](https://www.python.org/downloads/).
-  
+
 - **Tesseract OCR**: Language models (`.traineddata` files) are necessary for Tesseract to recognize text in different languages. You can find these files in the tessdata repository: [tessdata repository](https://github.com/tesseract-ocr/tessdata).
 
   To ensure Tesseract is installed correctly, run the following command in your terminal or command prompt:
@@ -58,13 +58,13 @@ To launch the application, run the following command in your terminal or command
 python clerk-savior.py
 ```
 
-## Instructions 
+## Instructions
 
 1. **Launch the Application**:
    - Open the Clerk Savior application by running `python clerk-savior.py`.
 
 2. **Open a PDF or Image**:
-   - Double click on the display panel to select and open a file. 
+   - Double click on the display panel to select and open a file.
    - Or click on the "Open Image" button to open image file, or click the "Open PDF" button to open a PDF document.
 
 3. **Set the Renaming Pattern**:
@@ -75,16 +75,13 @@ python clerk-savior.py
    - !!! Make sure the language selected at the top right corner is the language in the file
    - Click on the cell where you want the extracted text to appear.
    - Click on the display panel to select the area containing the text.
-   - Release the mouse button to extract and display the text in the selected cell. 
+   - Release the mouse button to extract and display the text in the selected cell.
 
 5. **Zoom In and Out**:
    - Use the scroll wheel while holding down the `Ctrl` key to zoom in and out of the image displayed in the panel.
 
 6. **Rename Files**:
-   - Make sure the new File names are filled, then click the "Rename All Files" button to rename all the files 
+   - Make sure the new File names are filled, then click the "Rename All Files" button to rename all the files
 
 7. **Navigate PDF Pages (if applicable)**:
    - If you opened a PDF, use the "Next Page" button to navigate through the pages of the document.
-
-
-
