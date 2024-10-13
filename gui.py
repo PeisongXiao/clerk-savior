@@ -15,6 +15,7 @@ from pdf2image import convert_from_path
 from io import BytesIO
 
 class ClerkGUI(QtWidgets.QMainWindow):
+    # initialization 
     # requires: modelNames must be valid and not empty
     def __init__(self, modelNames):
         print("Initializing GUI...")
@@ -22,13 +23,15 @@ class ClerkGUI(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.ui = uic.loadUi('clerk.ui', self)
 
-        self.ui.openImage.clicked.connect(self.openImageFile)
-        self.ui.openPDF.clicked.connect(self.openPDFFile)
-        self.ui.nextPage.clicked.connect(self.nextImage)
-        self.ui.batchProcess.clicked.connect(self.process)
-        self.ui.batchRename.clicked.connect(self.rename)
+        # connect buttons in the UI to functions
+        self.ui.openImage.clicked.connect(self.openImageFile) # "Open Image" button
+        self.ui.openPDF.clicked.connect(self.openPDFFile) # "Open PDF" button
+        self.ui.nextPage.clicked.connect(self.nextImage) # "Next Page" button
+        self.ui.batchProcess.clicked.connect(self.process) # "Process file names" button
+        self.ui.batchRename.clicked.connect(self.rename) # "Rename all files" button
 
-        self.rubberBand = QRubberBand(QRubberBand.Shape.Rectangle, self)
+        # Rubber Band and Mouse tracking 
+        self.rubberBand = QRubberBand(QRubberBand.Shape.Rectangle, self) 
         self.ui.viewPanel.setMouseTracking(True)
         self.ui.viewPanel.installEventFilter(self)
         self.ui.viewPanel.setAlignment(PyQt6.QtCore.Qt.AlignmentFlag.AlignTop)
@@ -37,17 +40,21 @@ class ClerkGUI(QtWidgets.QMainWindow):
             print("[ERR] No tesseract model(s) given to ClerkGUI!",
                   file=sys.stderr)
             sys.exit(1)
+
+        # Tersseract Model initialization 
         self.modelNames = modelNames
         self.updateModel(self.modelNames[0])
         self.models.addItems(self.modelNames)
         self.models.currentTextChanged.connect(self.updateModel)
         self.models.setCurrentIndex(self.modelNames.index(self.model))
 
+        # Set up for image and display 
         self.imageList  = []
         self.pixmapList = []
         self.imageIndex = 0
         self.imageScale = SCALE_DEFAULT
         
+        # Set up for table 
         self.items = QStandardItemModel()
         self.itemsTable.setModel(self.items)
         self.items.setColumnCount(TABLE_COL_CNT)
@@ -55,7 +62,7 @@ class ClerkGUI(QtWidgets.QMainWindow):
         self.setTableHeader()
         print("Initialized new table!")
 
-    # openImageFile(): prompts to open an image, if an error occurrs, the
+    #  openImageFile(): prompts to open an image, if an error occurrs, the
     #  image within the photo view will not be updated, otherwise, the
     #  image will be updated and stored in self.pixmapList
     def openImageFile(self):
@@ -67,6 +74,7 @@ class ClerkGUI(QtWidgets.QMainWindow):
         
         filename = QFileDialog.getOpenFileName(self, 'Select File',
                                                filter="Images (*.jpeg *.jpg *.png)")
+            
         if filename[0] == "":
             print("No file was selected or opened!")
             return None
@@ -78,11 +86,13 @@ class ClerkGUI(QtWidgets.QMainWindow):
             print("Error: image is empty!", file=sys.stderr)
             print("No file was opened!")
             return None
-
+        
+        # Convert the image for display 
         frame = cv2.cvtColor(self.imageList[0], cv2.COLOR_BGR2RGB)
         image = QImage(frame, frame.shape[1], frame.shape[0],
                        frame.strides[0], QImage.Format.Format_RGB888)
-
+        
+        # add to pixmap list and update view 
         self.pixmapList.append(QPixmap.fromImage(image))
         self.imageScale = SCALE_DEFAULT
         self.updateView()
@@ -90,8 +100,12 @@ class ClerkGUI(QtWidgets.QMainWindow):
         self.statusBar().showMessage("Opened file: " + filename[0])
 
         self.newRow(self.items.rowCount(), filename[0])
+        
         return None
-
+    
+    # openPDFFile(): Prompts the user to open a PDF file. if an error occurs exists, 
+    # image within the photo view will not be updated. Otherwise, each page of the PDF is converted to
+    # an image and stored in self.pixmapList, the first page will be  displayed.
     def openPDFFile(self):
         self.imageList  = []
         self.imageIndex = 0
@@ -108,6 +122,7 @@ class ClerkGUI(QtWidgets.QMainWindow):
         print("Opening file: ", filename[0])
         pages = convert_from_path(filename[0], fmt="jpeg")
 
+        # convert each page to an image 
         for page in pages:
             with BytesIO() as ftmp:
                 page.save(ftmp, format="JPEG")
@@ -118,7 +133,7 @@ class ClerkGUI(QtWidgets.QMainWindow):
                 image = QImage(frame, frame.shape[1], frame.shape[0],
                                frame.strides[0], QImage.Format.Format_RGB888)
                 self.pixmapList.append(QPixmap.fromImage(image))
-
+  
         del pages
         gc.collect()
 
@@ -131,8 +146,8 @@ class ClerkGUI(QtWidgets.QMainWindow):
 
         return None
 
-    # setTableHeader(): sets the headers of the table when a new
-    #  image is opened
+    # setTableHeader(): sets the headers and create the "Add" button in the table
+    # for adding new columns
     def setTableHeader(self):
         for i in range(TABLE_COL_CNT):
             item = QStandardItem(TABLE_HEADERS[i])
@@ -146,7 +161,8 @@ class ClerkGUI(QtWidgets.QMainWindow):
 
         self.itemsTable.resizeColumnsToContents()
 
-    # updateView(): update the image with the new scale
+    # updateView(): update the current image with the new scale
+    # requires: The image is loaded into the pixmapList
     def updateView(self):
         self.ui.viewPanel.setPixmap(self.pixmapList[self.imageIndex].scaled(
             int(self.imageScale * self.pixmapList[self.imageIndex].width()),
@@ -169,14 +185,21 @@ class ClerkGUI(QtWidgets.QMainWindow):
         index  = self.itemsTable.indexAt(button.pos())
         self.newRow(index.row() + 1, "")
 
+    # newRow(): creates a new row in the table with the filenames and buttons.
     def newRow(self, row, fileName):
+       
         items = [QStandardItem("") for i in range(self.items.columnCount())]
         self.items.insertRow(row, items)
         self.items.setItem(row, TABLE_COL_FILE_NAME, QStandardItem(fileName))
         self.populateButtons(row)
         print("Added new row", row)
         self.statusBar().showMessage("Added new row " + str(row))
-        
+
+    # nameRow(): creates a new file name based on the pattern from the patternBox and
+    # and data from multiple columns
+    # example: the pattern in patternBox is file_$0$_$1$.jpg
+    # And the first two columns have "image" and "01",
+    # the generated file name will be "file_image_01.jpg".
     def nameRow(self, row):
         fileName = str(self.patternBox.text())
         for i in range(self.items.columnCount() - TABLE_COL_CNT):
@@ -187,20 +210,27 @@ class ClerkGUI(QtWidgets.QMainWindow):
         self.items.setItem(row, self.items.columnCount() - 1,
                            QStandardItem(fileName))
 
+    # process(): generates a new file name for each row 
     def process(self):
         for i in range(1, self.items.rowCount()):
             self.nameRow(i)
         return None
 
+    # rename(): iterates through each row in the table, and renames the files
     def rename(self):
         for i in range(1, self.items.rowCount()):
             originalPath = self.items.item(i, TABLE_COL_FILE_NAME).text()
             newPath      = os.path.join(os.path.dirname(originalPath),
                                         self.items.item(
                                             i, self.items.columnCount() - 1).text())
+            # for windows system only
+            if os.name == 'nt':  
+                newPath= newPath.replace("\\",'/')
+                
             os.rename(originalPath, newPath)
         return None
-
+    
+    # addCol(): Adds a new column to the table
     def addCol(self):
         item = QStandardItem(str(self.items.columnCount() - TABLE_COL_CNT))
         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -209,6 +239,7 @@ class ClerkGUI(QtWidgets.QMainWindow):
         self.items.insertColumn(self.items.columnCount() - 1, items)
 
     # populateButtons(): put buttons on the table when creating a new row
+    # with "Del" button linked to delRow() and "Add Row" linked to addRow() function
     def populateButtons(self, row):
         delButton  = QPushButton("Del")
         self.itemsTable.setIndexWidget(
@@ -227,34 +258,39 @@ class ClerkGUI(QtWidgets.QMainWindow):
         self.model = value
         print("Model selected as:", self.model)
 
-    # eventFilter(source, event): handles a few things differently
+    # eventFilter(source, event): Handles different types of events occurs 
+    # in the view panel. And depending on the type of event, different functions are called to 
+    # handle it
+    # return type: bool
+    # -  True if the event has been handled
+    # -  False if the evenet cannot be processed 
     def eventFilter(self, source, event):
+        # 1: press mouse over the view panel
         if (event.type() == QEvent.Type.MouseButtonPress and
             source is self.ui.viewPanel):
-            self.rubberBandShow(event)
+            self.rubberBandShow(event) # draw the rubber band
             return True
-
+        # 2: move the mouse over the view panel
         elif (event.type() == QEvent.Type.MouseMove and
               source is self.ui.viewPanel and self.rubberBand.isVisible()):
-            self.rubberBandRedraw(event)
+            self.rubberBandRedraw(event) #adjust the size of rubber band
             return True
-
+        # 3: release the mouse 
         elif (event.type() == QEvent.Type.MouseButtonRelease and
               source is self.ui.viewPanel and self.rubberBand.isVisible()):
-            return self.rubberBandSelect(event)
-
+            return self.rubberBandSelect(event)# finalize and process the selected area
+        # 4: Wheel: rezie the image 
         elif (event.type() == QEvent.Type.Wheel and
               self.imageList is not [] and source is self.ui.viewPanel and
               QApplication.keyboardModifiers() ==
-              Qt.KeyboardModifier.ControlModifier):
+              Qt.KeyboardModifier.ControlModifier): # zoom in/out the image
             self.imageResize(event)
             return True
-
+        # 5: open a new image when double click on the view panel
         elif (event.type() == QEvent.Type.MouseButtonDblClick and
               source is self.ui.viewPanel):
-            self.openImageFile()
+            self.openImageFile() # open a new image file
             return True
-
         return False
 
     # rubberBandShow(event): shows the rubber band for selection
@@ -270,13 +306,19 @@ class ClerkGUI(QtWidgets.QMainWindow):
         pos = QPoint(int(max(pos.x(), 0)), int(max(pos.y(), 0)))
         self.rubberBand.setGeometry(QRect(self.org.toPoint(), pos).normalized())
 
-    # rubberBandSelect(event): processes the rubber band for selection
+    # rubberBandSelect(event): finalize the rubber band selection. This function processes 
+    # the selected area
+    # Returns type: bool
+    # - True if a valid area is selected and text extraction is successful.
+    # - False if no valid area is selected or if the selection dimensions is too small
     def rubberBandSelect(self, event):
         pos = event.position()
         self.top_left = QPoint(int(max(min(pos.x(), self.top_left.x()), 0)),
                                int(max(min(pos.y(), self.top_left.y()), 0)))
 
         self.rubberBand.hide()
+        
+        # caculates the selected area 
         rect = self.rubberBand.geometry()
         self.x1 = int(self.top_left.x() / self.imageScale)
         self.y1 = int(self.top_left.y() / self.imageScale)
@@ -288,8 +330,9 @@ class ClerkGUI(QtWidgets.QMainWindow):
         if (width >= WIDTH_MIN and height >= HEIGHT_MIN and
             self.imageList is not []):
             print("Cropped image:", self.x1, self.y1, self.x2, self.y2)
-            crop = self.imageList[self.imageIndex][self.y1:self.y2, self.x1:self.x2]
+            crop = self.imageList[self.imageIndex][self.y1:self.y2, self.x1:self.x2] 
 
+            # extract the text from the selected area 
             text = tess.image2Text(self.model, crop)
             print("Text selected:", text)
             self.statusBar().showMessage("Text selected: " + text)
@@ -298,6 +341,9 @@ class ClerkGUI(QtWidgets.QMainWindow):
 
         return False
 
+    # addText(text): adds the extracted text to the selected cell in the table.
+    # inserts the given text into the selected table cell.  If no valid cell is selected, or
+    # multiple cell selected, display error message
     def addText(self, text):
         indexes = self.itemsTable.selectionModel().selectedIndexes()
         for idx in indexes:
