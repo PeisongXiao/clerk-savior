@@ -10,9 +10,9 @@ if os.path.exists("clerk.cfg"):
     MODELS_PATH = config["DEFAULT"]["path"]
     traineddataFiles = glob.glob(os.path.join(MODELS_PATH, "*.traineddata"))
     if not traineddataFiles:
-        MODELS_PATH = '#/usr/share/tessdata/'
+        MODELS_PATH = '/usr/share/tessdata/'
 else:
-    MODELS_PATH = '#/usr/share/tessdata/' # default for linux system
+    MODELS_PATH = '/usr/share/tessdata/' # default for linux system
 
 # Sane values for scaling
 SCALE_MIN     = 0.2          # Minimum scaling factor for images
